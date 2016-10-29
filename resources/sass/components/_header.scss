@@ -1,0 +1,15 @@
+.-is-header {
+	height: 3em;
+	padding: 0;
+	background-color: white;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	box-shadow: 0 0 0 5px rgba(black, .1);
+
+	img {
+		height: 2em;
+		position: relative;
+		top: .5em;
+	}
+}

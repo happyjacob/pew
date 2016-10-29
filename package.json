@@ -1,0 +1,16 @@
+{
+  "name": "pew",
+  "version": "0.1.0",
+  "description": "Pew landing generator",
+  "main": "gulpfile.js",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-sass": "^2.3.2"
+  },
+  "scripts": {
+    "test": "hello"
+  },
+  "author": "Jacob Popov",
+  "license": "ISC"
+}

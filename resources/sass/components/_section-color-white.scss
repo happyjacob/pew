@@ -1,0 +1,10 @@
+.wrapper {
+
+	&.-color-white {
+		background-color: white;
+
+		+ .-color-white {
+			border-top: 1px solid rgba(#000000, .075);
+		}
+	}
+}

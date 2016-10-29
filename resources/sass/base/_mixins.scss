@@ -1,0 +1,13 @@
+// @include respond-to(medium) { ... }
+
+@mixin respond-to($media) {
+	@if $media == medium {
+		@media all and (max-width: $screen-large) { @content; }
+	}
+	@if $media == small {
+		@media all and (max-width: $screen-medium) { @content; }
+	}
+	@if $media == extra-small {
+		@media all and (max-width: $screen-small) { @content; }
+	}
+}
