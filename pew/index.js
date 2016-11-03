@@ -209,7 +209,7 @@ var letsPew = function letsPew(options, sync) {
 
 		addHeaders = function(content, title) {
 			var now = new Date();
-			var meta = `<!DOCTYPE html>\n<html lang="en">\n<head>\n\t<meta charset="utf-8">\n\t<meta http-equiv="X-UA-Compatible" content="IE=edge">\n\t<meta name="viewport" content="width=device-width, initial-scale=1">\n\t<title>` + title + `</title>\n\t<link rel="icon" href="favicon.png?v=1.1">\n\t<link href="css/app.css" rel="stylesheet">\n</head>\n<body>\n\t<div class="content">\n`;
+			var meta = `<!DOCTYPE html>\n<html lang="en">\n<head>\n\t<meta charset="utf-8">\n\t<meta http-equiv="X-UA-Compatible" content="IE=edge">\n\t<meta name="viewport" content="width=device-width, initial-scale=1">\n\t<title>` + title + `</title>\n\t<link rel="icon" href="favicon.ico?v=1.1">\n\t<link href="css/app.css" rel="stylesheet">\n</head>\n<body>\n\t<div class="content">\n`;
 			var header = `\n\t<div class="wrapper -is-header">\n\t\t<div class="container">\n\t\t\t<img src="logo.svg" alt="">\n\t\t</div>\n\t</div>\n`;
 			var footer = `\t</div>\n\t<div class="wrapper -is-footer">\n\t\t<div class="container">\n\t\t\t<p>Created through the <a href="/" target="_blank">/pew</a>, ` + now.getFullYear() + `.</p>\n\t\t</div>\n\t</div>\n</body>\n</html>`;
 			return meta + header + content + footer;
