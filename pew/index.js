@@ -25,12 +25,16 @@ var letsPew = function letsPew(options, sync) {
 		SECTION_STYLES[3] = '-color-black';
 		SECTION_STYLES[4] = '-color-primary';
 
+		var SECTION_IMAGE = '-bg-image';
+
 		var EMPTY_SECTION = '-is-empty';
 
 		var filePush,
 			addHeaders,
 			createHtml,
 			paragraphsSettings,
+			isLink,
+			isImage,
 			createStructure,
 			createItems,
 			stringToItems;
@@ -57,6 +61,8 @@ var letsPew = function letsPew(options, sync) {
 				section['classes'].forEach(function(className, i) {
 					html = html + ` ` + className;
 				});
+
+				if (section['style']) html = html + `" style="` + section['style'];
 
 				html = html + `">\n\t\t\t<div class="container">\n`;
 
@@ -88,6 +94,16 @@ var letsPew = function letsPew(options, sync) {
 			});
 		}
 
+		isLink = function(string) {
+			var regular = /(\(.*?)?\b((?:https?|ftp|file):\/\/[-a-z0-9+&@#\/%?=~_()|!:,.;]*[-a-z0-9+&@#\/%=~_()|])/ig;
+			var link = string.replace(regular, '');
+			return (link.length) ? false : true;
+		}
+
+		isImage = function(string) {
+			return (string.match(/\.(jpg|gif|png)$/)!= null);
+		}
+
 		createStructure = function(items) {
 			var structure = [];
 			var sectionIndex = 0;
@@ -116,10 +132,15 @@ var letsPew = function letsPew(options, sync) {
 
 					// if the sections is already declared without a title
 					// then the string is title of the section
-					else if (!structure['sections'][sectionIndex]['title']) structure['sections'][sectionIndex]['title'] = item;
+					else if (!structure['sections'][sectionIndex]['title'] && !isLink(item)) structure['sections'][sectionIndex]['title'] = item;
 
-					// otherwise the string is paragraph
-					else structure['sections'][sectionIndex]['paragraphs'].push(paragraphsSettings(item));
+					// if the string is not a link otherwise the string is paragraph
+					else if (!isLink(item)) structure['sections'][sectionIndex]['paragraphs'].push(paragraphsSettings(item));
+
+					else if (isImage(item)) {
+						if (structure['sections'][sectionIndex]['classes'].length < 2) structure['sections'][sectionIndex]['classes'].push(SECTION_IMAGE);
+						structure['sections'][sectionIndex]['style'] = 'background-image: url(' + item + ')';
+					}
 				}
 
 				// for numbers
@@ -142,25 +163,24 @@ var letsPew = function letsPew(options, sync) {
 						structure['sections'][sectionIndex]['paragraphs'] = [];
 
 						if (item > SECTION_SIZES.length - 1) item = SECTION_SIZES.length - 1;
-						if (SECTION_SIZES[item]) structure['sections'][sectionIndex]['classes'].push(SECTION_SIZES[item]);
+						structure['sections'][sectionIndex]['classes'].push(SECTION_SIZES[item]);
 					}
 
 					// is the previos and the next items are numbers
-					// TODO: it is for empty sections
-					else if ((i == 0) || (items[i - 1] && Number.isInteger(items[i - 1])))  {
-						// if (structure['sections'].length) sectionIndex++;
-						// structure['sections'][sectionIndex] = [];
-						// structure['sections'][sectionIndex]['classes'] = [];
-						// structure['sections'][sectionIndex]['paragraphs'] = [];
-						// structure['sections'][sectionIndex]['classes'].push(EMPTY_SECTION);
-						// if (item > SECTION_STYLES.length - 1) item = SECTION_STYLES.length - 1;
-						// if (SECTION_STYLES[item]) structure['sections'][sectionIndex]['classes'].push(SECTION_STYLES[item]);
+					else if ((i == 0) || (items[i - 1] && Number.isInteger(items[i - 1]))) {
+						if (structure['sections'].length) sectionIndex++;
+						structure['sections'][sectionIndex] = [];
+						structure['sections'][sectionIndex]['classes'] = [];
+						structure['sections'][sectionIndex]['paragraphs'] = [];
+						structure['sections'][sectionIndex]['classes'].push(EMPTY_SECTION);
+						if (item > SECTION_STYLES.length - 1) item = SECTION_STYLES.length - 1;
+						if (structure['sections'][sectionIndex]['classes'].length < 2) structure['sections'][sectionIndex]['classes'].push(SECTION_STYLES[item]);
 					}
 
 					// otherwise it is a closing of the current section
 					else {
 						if (item > SECTION_STYLES.length - 1) item = SECTION_STYLES.length - 1;
-						if (SECTION_STYLES[item]) structure['sections'][sectionIndex]['classes'].push(SECTION_STYLES[item]);
+						if (structure['sections'][sectionIndex]['classes'].length < 2) structure['sections'][sectionIndex]['classes'].push(SECTION_STYLES[item]);
 					}
 				}
 			});

@@ -1,11 +1,6 @@
 .wrapper {
 
 	&.-is-empty {
-		border-top: none !important;
 		padding: 5px 0 0;
-
-		+ .wrapper {
-			border-top: none;
-		}
 	}
 }
