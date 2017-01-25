@@ -66,10 +66,10 @@ var letsPew = function letsPew(options, sync) {
 
 				html = html + `">\n\t\t\t<div class="container">\n`;
 
-				if (section['title']) html = html + `\t\t\t\t<h2>` + section['title'] + `</h2>\n`;
+				if (section['title']) html = html + `\t\t\t\t` + section['title'] + `\n`;
 
 				section['paragraphs'].forEach(function(paragraph) {
-					html = html + `\t\t\t\t<p>` + paragraph + `</p>\n`;
+					html = html + `\t\t\t\t` + paragraph + `\n`;
 				});
 
 				html = html + `\t\t\t</div>\n\t\t</div>\n`;
@@ -80,7 +80,28 @@ var letsPew = function letsPew(options, sync) {
 			return html;
 		}
 
-		paragraphsSettings = function(string) {
+		paragraphsSettings = function(string, isTitle) {
+
+			if (isLink(string)) {
+				var vimeoRegular = /(?:http?s?:\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g;
+				var youTubeRegular = /(?:http?s?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g;
+				var videoFrame;
+
+				if(vimeoRegular.test(string)){
+					var iframe = '<iframe width="420" height="345" src="https://player.vimeo.com/video/$1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+					videoFrame = string.replace(vimeoRegular, iframe);
+				}
+
+				if(youTubeRegular.test(string)){
+					var iframe = '<iframe width="420" height="345" src="http://www.youtube.com/embed/$1" frameborder="0" allowfullscreen></iframe>';
+					videoFrame = string.replace(youTubeRegular, iframe);
+				}
+
+				return (videoFrame) ?
+					`<div class="video-wrapper">` + videoFrame + `</div>` :
+					`<div class="button-wrapper"><a href="` + string + `" target="_blank" class="button">Click Me</a></div>`;
+			}
+
 			string = string
 				.replace(/&/g, "&amp;")
 				.replace(/</g, "&lt;")
@@ -89,9 +110,12 @@ var letsPew = function letsPew(options, sync) {
 				.replace(/'/g, "&#039;");
 
 			var regular = /(\(.*?)?\b((?:https?|ftp|file):\/\/[-a-z0-9+&@#\/%?=~_()|!:,.;]*[-a-z0-9+&@#\/%=~_()|])/ig;
-			return string.replace(regular, function(url) {
+
+			string = string.replace(regular, function(url) {
 				return "<a href='" + url + "' target='_blank'>" + url + "</a>";
 			});
+
+			return isTitle ? `<h2>` + string + '</h2>' : `<p>` + string + '</p>';
 		}
 
 		isLink = function(string) {
@@ -116,7 +140,7 @@ var letsPew = function letsPew(options, sync) {
 				if (!Number.isInteger(item)) {
 
 					// if the first item is string then it is a title
-					if (i == 0) structure['title'] = item;
+					if ((i == 0) && !isLink(item)) structure['title'] = item;
 
 					// creating a first section with the default size
 					// setting the string as a title of the section
@@ -126,18 +150,18 @@ var letsPew = function letsPew(options, sync) {
 						structure['sections'][sectionIndex] = [];
 						structure['sections'][sectionIndex]['classes'] = [];
 						structure['sections'][sectionIndex]['paragraphs'] = [];
-						structure['sections'][sectionIndex]['title'] = item;
+						structure['sections'][sectionIndex]['title'] = paragraphsSettings(item, true);
 						structure['sections'][sectionIndex]['classes'].push(SECTION_SIZES[0]);
 					}
 
 					// if the sections is already declared without a title
 					// then the string is title of the section
-					else if (!structure['sections'][sectionIndex]['title'] && !isLink(item)) structure['sections'][sectionIndex]['title'] = item;
+					else if (!structure['sections'][sectionIndex]['title'] && !(isLink(item) && isImage(item))) structure['sections'][sectionIndex]['title'] = paragraphsSettings(item, true);
 
 					// if the string is not a link otherwise the string is paragraph
-					else if (!isLink(item)) structure['sections'][sectionIndex]['paragraphs'].push(paragraphsSettings(item));
+					else if (!(isLink(item) && isImage(item))) structure['sections'][sectionIndex]['paragraphs'].push(paragraphsSettings(item));
 
-					else if (isImage(item)) {
+					else {
 						if (structure['sections'][sectionIndex]['classes'].length < 2) structure['sections'][sectionIndex]['classes'].push(SECTION_IMAGE);
 						structure['sections'][sectionIndex]['style'] = 'background-image: url(' + item + ')';
 					}
