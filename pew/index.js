@@ -10,6 +10,7 @@ var letsPew = function letsPew(options, sync) {
 		// constants
 
 		var DEFAULT_TITLE = 'Default title';
+		var DEFAULT_DESCRIPTION = 'Default description';
 
 		var SECTION_SIZES = [];
 		SECTION_SIZES[0] = '-size-medium';
@@ -33,6 +34,7 @@ var letsPew = function letsPew(options, sync) {
 			addHeaders,
 			createHtml,
 			paragraphsSettings,
+			cleanString,
 			isLink,
 			isImage,
 			createStructure,
@@ -75,7 +77,7 @@ var letsPew = function letsPew(options, sync) {
 				html = html + `\t\t\t</div>\n\t\t</div>\n`;
 			});
 
-			html = addHeaders(html, structure['title'] || DEFAULT_TITLE);
+			html = addHeaders(html, structure['title'] || DEFAULT_TITLE, structure['description'] || DEFAULT_DESCRIPTION);
 
 			return html;
 		}
@@ -102,12 +104,7 @@ var letsPew = function letsPew(options, sync) {
 					`<div class="button-wrapper"><a href="` + string + `" target="_blank" class="button">Click Me</a></div>`;
 			}
 
-			string = string
-				.replace(/&/g, "&amp;")
-				.replace(/</g, "&lt;")
-				.replace(/>/g, "&gt;")
-				.replace(/"/g, "&quot;")
-				.replace(/'/g, "&#039;");
+			string = cleanString(string);
 
 			var regular = /(\(.*?)?\b((?:https?|ftp|file):\/\/[-a-z0-9+&@#\/%?=~_()|!:,.;]*[-a-z0-9+&@#\/%=~_()|])/ig;
 
@@ -116,6 +113,15 @@ var letsPew = function letsPew(options, sync) {
 			});
 
 			return isTitle ? `<h2>` + string + '</h2>' : `<p>` + string + '</p>';
+		}
+
+		cleanString = function(string)  {
+			return string
+				.replace(/&/g, "&amp;")
+				.replace(/</g, "&lt;")
+				.replace(/>/g, "&gt;")
+				.replace(/"/g, "&quot;")
+				.replace(/'/g, "&#039;");
 		}
 
 		isLink = function(string) {
@@ -140,12 +146,11 @@ var letsPew = function letsPew(options, sync) {
 				if (!Number.isInteger(item)) {
 
 					// if the first item is string then it is a title
-					if ((i == 0) && !isLink(item)) structure['title'] = item;
+					if ((i == 0) && !isLink(item)) structure['title'] = cleanString(item);
 
 					// creating a first section with the default size
 					// setting the string as a title of the section
 					// (it is the case when a string follows the title of the document)
-					// TODO: this section will be a header section
 					else if (!structure['sections'][sectionIndex]) {
 						structure['sections'][sectionIndex] = [];
 						structure['sections'][sectionIndex]['classes'] = [];
@@ -165,6 +170,9 @@ var letsPew = function letsPew(options, sync) {
 						if (structure['sections'][sectionIndex]['classes'].length < 2) structure['sections'][sectionIndex]['classes'].push(SECTION_IMAGE);
 						structure['sections'][sectionIndex]['style'] = 'background-image: url(' + item + ')';
 					}
+
+					// adding description
+					if ((i > 0) && (!structure['description']) && (!isLink(item)) && (item.length > 20)) structure['description'] = cleanString(item);
 				}
 
 				// for numbers
@@ -251,10 +259,11 @@ var letsPew = function letsPew(options, sync) {
 			return items;
 		};
 
-		addHeaders = function(content, title) {
+		addHeaders = function(content, title, description) {
 			var now = new Date();
-			var meta = `<!DOCTYPE html>\n<html lang="en">\n<head>\n\t<meta charset="utf-8">\n\t<meta http-equiv="X-UA-Compatible" content="IE=edge">\n\t<meta name="viewport" content="width=device-width, initial-scale=1">\n\t<title>` + title + `</title>\n\t<link rel="icon" href="favicon.ico?v=1.1">\n\t<link href="css/app.css" rel="stylesheet">\n</head>\n<body>\n\t<div class="content">\n`;
-			var header = `\n\t<div class="wrapper -is-header">\n\t\t<div class="container">\n\t\t\t<img src="logo.svg" alt="">\n\t\t</div>\n\t</div>\n`;
+			var keywords = description.match(/(\w+){5}/ig).join(', ');
+			var meta = `<!DOCTYPE html>\n<html lang="en">\n<head>\n\t<meta charset="utf-8">\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">\n\t<meta name="description" content="` + description + `">\n\t<meta name="keywords" content="` + keywords + `">\n\t<meta property="og:title" content="` + title + `">\n\t<meta property="og:description" content="` + description + `">\n\t<meta property="og:image" content="img/share.png">\n\t<meta property="og:type" content="website">\n\t<meta name="twitter:card" content="summary_large_image">\n\t<meta name="twitter:title" content="` + title + `">\n\t<meta name="twitter:description" content="` + description + `">\n\t<meta name="twitter:image" content="img/share.png">\n\t<link href="img/ios-60.png" rel="apple-touch-icon-precomposed" sizes="60x60" type="image/png">\n\t<link href="img/ios-76.png" rel="apple-touch-icon-precomposed" sizes="76x76" type="image/png">\n\t<link href="img/ios-120.png" rel="apple-touch-icon-precomposed" sizes="120x120" type="image/png">\n\t<link href="img/ios-152.png" rel="apple-touch-icon-precomposed" sizes="152x152" type="image/png">\n\t<title>` + title + `</title>\n\t<link rel="icon" href="favicon.ico?v=1.1">\n\t<link href="css/app.css" rel="stylesheet" type="text/css">\n</head>\n<body>\n\t<div class="content">\n`;
+			var header = `\n\t<div class="wrapper -is-header">\n\t\t<div class="container">\n\t\t\t<img src="img/logo.svg" alt="">\n\t\t</div>\n\t</div>\n`;
 			var footer = `\t</div>\n\t<div class="wrapper -is-footer">\n\t\t<div class="container">\n\t\t\t<p>Created through the <a href="/" target="_blank">/pew</a>, ` + now.getFullYear() + `.</p>\n\t\t</div>\n\t</div>\n</body>\n</html>`;
 			return meta + header + content + footer;
 		};

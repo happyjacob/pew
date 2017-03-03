@@ -1,0 +1,92 @@
+// @include attention() { ... }
+
+@mixin attention() {
+
+  &:hover,
+  &:active,
+  &:focus {
+
+    @content;
+  }
+}
+
+// @include no-user-select
+
+@mixin no-user-select() {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+// @include box-sizing(border-box)
+
+@mixin box-sizing($property) {
+  -moz-box-sizing: $property;
+  box-sizing: $property;
+}
+
+// @include border-radius(50%)
+
+@mixin border-radius($property) {
+  -webkit-border-radius: $property;
+  -moz-border-radius: $property;
+  border-radius: $property;
+}
+
+// @include background-size(cover)
+
+@mixin background-size($property) {
+  -webkit-background-size: $property;
+  -moz-background-size: $property;
+  -o-background-size: $property;
+  background-size: $property;
+}
+
+// @include box-shadow(2px, 2px, 4px, #cccccc)
+
+@mixin box-shadow($top, $left, $blur, $color, $inset:"") {
+  -webkit-box-shadow:$top $left $blur $color #{$inset};
+  -moz-box-shadow:$top $left $blur $color #{$inset};
+  box-shadow:$top $left $blur $color #{$inset};
+}
+
+// @include transition(height .3s linear)
+// @include transition("height .3s linear, left .5s ease-in")
+
+@mixin transition($transit) {
+  -webkit-transition: #{$transit};
+  -moz-transition: #{$transit};
+  -ms-transition: #{$transit};
+  -o-transition: #{$transit};
+  transition: #{$transit};
+}
+
+// @include respond-to(medium) { ... }
+
+@mixin respond-to($media) {
+
+  @if $media == medium {
+
+    @media all and (max-width: $screen-large) {
+
+      @content;
+    }
+  }
+
+  @if $media == small {
+
+    @media all and (max-width: $screen-medium) {
+
+      @content;
+    }
+  }
+
+  @if $media == extra-small {
+
+    @media all and (max-width: $screen-small) {
+
+      @content;
+    }
+  }
+}

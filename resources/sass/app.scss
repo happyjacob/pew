@@ -1,49 +1,11 @@
-@import 'base/vars';
-@import 'base/mixins';
 @import 'https://fonts.googleapis.com/css?family=Lato:400,700';
 
-body, html {
-	height: 100%;
-}
+@import 'abstracts/variables';
+@import 'abstracts/mixins';
 
-body {
-	margin: 0;
-	padding: 0;
-	font-family: $font;
-	font-size: 16px;
+@import 'base/base';
+@import 'base/typography';
 
-	@include respond-to(extra-small) {
-		font-size: 14px;
-	}
-}
-
-.content {
-	min-height: 100%;
-	padding-top: 4em;
-	padding-bottom: 5em;
-}
-
-* {
-	box-sizing: border-box;
-}
-
-@import 'components/typography';
-@import 'components/section-default';
-@import 'components/header';
-@import 'components/footer';
-
-@import 'components/section-color-white';
-@import 'components/section-color-light';
-@import 'components/section-color-black';
-@import 'components/section-color-primary';
-
-@import 'components/section-bg-image';
-
-@import 'components/section-size-large';
-@import 'components/section-size-small';
-@import 'components/section-size-extra-small';
-
-@import 'components/section-is-empty';
-
+@import 'components/section';
 @import 'components/button';
 @import 'components/video-wrapper';
