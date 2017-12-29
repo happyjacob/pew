@@ -231,7 +231,7 @@ var letsPew = function letsPew(options, sync) {
     stringToItems = function(string) {
       var items = [];
       var itemIndex = 0;
-      var substrings = string.split('/pew');
+      var substrings = string.split("//pew");
 
       substrings.forEach(function(substring, i) {
         substring = substring.trim();
@@ -259,9 +259,9 @@ var letsPew = function letsPew(options, sync) {
     addHeaders = function(content, title, description) {
       var now = new Date();
       var keywords = description.match(/(\w+){5}/ig).join(', ');
-      var meta = `<!DOCTYPE html>\n<html lang="en">\n<head>\n\t<meta charset="utf-8">\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">\n\t<meta name="description" content="` + description + `">\n\t<meta name="keywords" content="` + keywords + `">\n\t<meta property="og:title" content="` + title + `">\n\t<meta property="og:description" content="` + description + `">\n\t<meta property="og:image" content="img/share.png">\n\t<meta property="og:type" content="website">\n\t<meta name="twitter:card" content="summary_large_image">\n\t<meta name="twitter:title" content="` + title + `">\n\t<meta name="twitter:description" content="` + description + `">\n\t<meta name="twitter:image" content="img/share.png">\n\t<link href="img/ios-60.png" rel="apple-touch-icon-precomposed" sizes="60x60" type="image/png">\n\t<link href="img/ios-76.png" rel="apple-touch-icon-precomposed" sizes="76x76" type="image/png">\n\t<link href="img/ios-120.png" rel="apple-touch-icon-precomposed" sizes="120x120" type="image/png">\n\t<link href="img/ios-152.png" rel="apple-touch-icon-precomposed" sizes="152x152" type="image/png">\n\t<title>` + title + `</title>\n\t<link rel="icon" href="favicon.ico?v=1.1">\n\t<link href="css/app.css" rel="stylesheet" type="text/css">\n</head>\n<body>\n\t<div class="content">\n`;
+      var meta = `<!DOCTYPE html>\n<html lang="en">\n<head>\n\t<meta charset="utf-8">\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">\n\t<meta name="description" content="` + description + `">\n\t<meta name="keywords" content="` + keywords + `">\n\t<meta property="og:title" content="` + title + `">\n\t<meta property="og:description" content="` + description + `">\n\t<meta property="og:image" content="img/share.png">\n\t<meta property="og:type" content="website">\n\t<meta name="twitter:card" content="summary_large_image">\n\t<meta name="twitter:title" content="` + title + `">\n\t<meta name="twitter:description" content="` + description + `">\n\t<meta name="twitter:image" content="http://happyjacob.me/_sources/pew/share.png">\n\t<link href="img/ios-60.png" rel="apple-touch-icon-precomposed" sizes="60x60" type="image/png">\n\t<link href="img/ios-76.png" rel="apple-touch-icon-precomposed" sizes="76x76" type="image/png">\n\t<link href="img/ios-120.png" rel="apple-touch-icon-precomposed" sizes="120x120" type="image/png">\n\t<link href="img/ios-152.png" rel="apple-touch-icon-precomposed" sizes="152x152" type="image/png">\n\t<title>` + title + `</title>\n\t<link rel="icon" href="favicon.ico?v=1.1">\n\t<link href="css/app.css" rel="stylesheet" type="text/css">\n</head>\n<body>\n\t<div class="content">\n`;
       var header = `\n\t<div class="wrapper -is-header">\n\t\t<div class="container">\n\t\t\t<img src="img/logo.svg" alt="">\n\t\t</div>\n\t</div>\n`;
-      var footer = `\t</div>\n\t<div class="wrapper -is-footer">\n\t\t<div class="container">\n\t\t\t<p>Created through the <a href="/" target="_blank">/pew</a>, ` + now.getFullYear() + `.</p>\n\t\t</div>\n\t</div>\n</body>\n</html>`;
+      var footer = `\t</div>\n\t<div class="wrapper -is-footer">\n\t\t<div class="container">\n\t\t\t<p>Created with the <a href="/" target="_blank">Pew</a>, ` + now.getFullYear() + `.</p>\n\t\t</div>\n\t</div>\n</body>\n</html>`;
       return meta + header + content + footer;
     };
 
